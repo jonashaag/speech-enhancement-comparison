@@ -10,9 +10,9 @@ from tensorflow.keras.layers import Activation, Add, Conv1D, Conv2D, Dense, Drop
 	Flatten, LayerNormalization, MaxPooling2D, ReLU
 import numpy as np
 
-class TCN:
+class ResNet:
 	"""
-	Temporal convolutional network using bottlekneck residual blocks and cyclic
+	Residual network using bottlekneck residual blocks and cyclic
 	dilation rate. Frame-wise layer normalisation is used.
 	"""
 	def __init__(
@@ -23,7 +23,8 @@ class TCN:
 		d_model,
 		d_f,
 		k,
-		max_d_rate
+		max_d_rate,
+		padding,
 		):
 		"""
 		Argument/s:
@@ -34,12 +35,13 @@ class TCN:
 			d_f - bottlekneck size.
 			k - kernel size.
 			max_d_rate - maximum dilation rate.
-			softmax - softmax output flag.
+			padding - padding type.
 		"""
 		self.d_model = d_model
 		self.d_f = d_f
 		self.k = k
 		self.n_outp = n_outp
+		self.padding = padding
 		self.first_layer = self.feedforward(inp)
 		self.layer_list = [self.first_layer]
 		for i in range(n_blocks): self.layer_list.append(self.block(self.layer_list[-1], int(2**(i%(np.log2(max_d_rate)+1)))))
@@ -95,6 +97,6 @@ class TCN:
 		"""
 		norm = LayerNormalization(axis=2, epsilon=1e-6)(inp)
 		act = ReLU()(norm)
-		conv = Conv1D(n_filt, k, padding="causal", dilation_rate=d_rate,
+		conv = Conv1D(n_filt, k, padding=self.padding, dilation_rate=d_rate,
 			use_bias=use_bias)(act)
 		return conv
