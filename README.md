@@ -189,7 +189,7 @@ Things that could improve Deep Xi
 
 If you would like to contribute to Deep Xi, please investigate the following and compare it to current models:
 
-* Try layer norm without shifting and scaling parameters to reduce overfitting on training set, as per this [paper](https://papers.nips.cc/paper/8689-understanding-and-improving-layer-normalization.pdf)
+* Try layer norm without shifting and scaling parameters to reduce overfitting on training set, as per this [paper](https://papers.nips.cc/paper/8689-understanding-and-improving-layer-normalization.pdf).
 
 Citation guide
 -----
