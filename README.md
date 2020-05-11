@@ -184,10 +184,12 @@ Please look in [`log/results`](https://github.com/anicolson/DeepXi/blob/master/l
 ```
 Ensure to delete the data directory before training. This will allow training lists and statistics for your training set to be saved and used. **To retrain from a certain epoch, set `--resume_epoch` in [`run.sh`](https://github.com/anicolson/DeepXi/blob/master/run.sh) to the desired epoch**.
 
-Things that could improve Deep Xi
+Current issues and potential areas of improvement
 -----
 
 If you would like to contribute to Deep Xi, please investigate the following and compare it to current models:
+
+* Currently, the ResLSTM network is not performing as well as expected (when compared to TensorFlow 1.x performance).
 
 * Try layer norm without shifting and scaling parameters to reduce overfitting on training set, as per this [paper](https://papers.nips.cc/paper/8689-understanding-and-improving-layer-normalization.pdf).
 
