@@ -42,25 +42,6 @@ Which audio do I use with Deep Xi?
 ----
 Deep Xi operates on mono/single-channel audio (not stereo/dual-channel audio). Single-channel audio is used due to most cell phones using a single microphone. The available trained models operate on a sampling frequency of `f_s=16000`Hz, which is currently the standard sampling frequency used in the speech enhancement community. The sampling frequency can be changed in `run.sh`. Deep Xi can be trained using a higher sampling frequency (e.g. `f_s=44100`Hz), but this is unnecessary as human speech rarely exceeds 8 kHz (the Nyquist frequency of `f_s=16000`Hz is 8 kHz). The available trained models operate on a window duration and shift of `T_d=32`ms and `T_s=16`ms, respectively. To train a model on a different window duration and shift, `T_d` and `T_s` can be changed in `run.sh`. Currently, Deep Xi supports `.wav`, `.mp3`, and `.flac` audio codecs. The audio codec and bit rate does not affect the performance of Deep Xi.
 
-Naming convention in the `set/` directory
------
-
-**Training set**
-
-The filenames of the waveforms in the `train_clean_speech` and `train_noise` directories are not restricted. There can be a different number of waveforms in each. The Deep Xi framework utilises each of the waveforms in `train_clean_speech` once during an epoch. For each mini-batch of `train_clean_speech`, the Deep Xi framework selects a random section of a randomely selected waveform from `train_noise` (that is at a length greater than or equal to the train clean speech waveform) and adds it to the train clean speech waveform at a randomly selected SNR level (the SNR level range can be set in `run.sh`). 
-
-**Validation set**
-
-
-
-
-**Test set**
-
-The filenames of the waveforms in the `test_noisy_speech` directory are not restricted. This is all that is required if you want inference outputs from Deep Xi, i.e. `./run.sh VER="ANY_NAME" INFER=1`. If you are obtaining objective scores by using `./run.sh VER="ANY_NAME" TEST=1`, then reference waveforms for the objective measures need to be placed in `test_clean_speech`. The filename of the waveform in `test_clean_speech` that corresponds to a waveform in `test_noisy_speech` must must be contained in the corresponding test noisy speech waveforn filename. E.g. if the filename of a test noisy speech waveform is `test_noisy_speech/61-70968-0000_SIGNAL021_-5dB.wav`, then the filename of the corresponding test clean speech waveform must be contained in the filename of the test noisy speech waveform: `test_clean_speech/61-70968-0000.wav`. This is because a test clean speech waveform may be used as a reference for multiple waveforms in `test_noisy_speech` (e.g. `test_noisy_speech/61-70968-0000_SIGNAL021_0dB.wav`, `test_noisy_speech/61-70968-0000_SIGNAL021_5dB.wav`, and `test_noisy_speech/61-70968-0000_SIGNAL021_10dB.wav` are additional test noisy speech waveforms that the test clean speech waveform from the previous example is a reference for).
-
-
-
-
 Where can I get a dataset for Deep Xi?
 ----
 Open-source training and testing sets are available for Deep Xi on IEEE *DataPort*:
@@ -72,6 +53,22 @@ Deep Xi Test Set: [http://dx.doi.org/10.21227/h3xh-tm88](http://dx.doi.org/10.21
 Test set from the original [Deep Xi paper](https://doi.org/10.1016/j.specom.2019.06.002): [http://dx.doi.org/10.21227/0ppr-yy46](http://dx.doi.org/10.21227/0ppr-yy46).
 
 The MATLAB scripts used to generate these sets can be found in [`set`](https://github.com/anicolson/DeepXi/tree/master/set).
+
+Naming convention in the `set/` directory
+-----
+
+**Training set**
+
+The filenames of the waveforms in the `train_clean_speech` and `train_noise` directories are not restricted. There can be a different number of waveforms in each. The Deep Xi framework utilises each of the waveforms in `train_clean_speech` once during an epoch. For each mini-batch of `train_clean_speech`, the Deep Xi framework selects a random section of a randomely selected waveform from `train_noise` (that is at a length greater than or equal to the train clean speech waveform) and adds it to the train clean speech waveform at a randomly selected SNR level (the SNR level range can be set in `run.sh`). 
+
+**Validation set**
+
+As the validation set must not change from epoch to epoch, a set of restrictions apply to the waveforms in `val_clean_speech` and `val_noise`. There must be the same amount of waveforms in `val_clean_speech` and `val_noise`. One waveform in `val_clean_speech` corresponds to only one waveform in `val_noise`, i.e a clean speech and noise validation waveform pair. Each clean speech and noise validation waveform pair must have identical filenames and and an identical number of samples. Each clean speech and noise validation waveform pair must have the SNR level (dB) that they are to be mixed at placed at the end of their filenames. The convention used is `_XdB`, where `X` is replaced with the desired SNR level. E.g. `val_clean_speech/NAME_-5dB.wav` and `val_noise/NAME_-5dB.wav`. An example of the filenames for a clean speech and noise validation waveform pair is as follows: `val_clean_speech/198_19-198-0003_Machinery17_15dB.wav` and `val_noise/198_19-198-0003_Machinery17_15dB.wav`.
+
+
+**Test set**
+
+The filenames of the waveforms in the `test_noisy_speech` directory are not restricted. This is all that is required if you want inference outputs from Deep Xi, i.e. `./run.sh VER="ANY_NAME" INFER=1`. If you are obtaining objective scores by using `./run.sh VER="ANY_NAME" TEST=1`, then reference waveforms for the objective measures need to be placed in `test_clean_speech`. The waveforms in `test_clean_speech` and `test_noisy_speech` that correspond to each other must have the same number of samples (i.e the same sequence length). The filename of the waveform in `test_clean_speech` that corresponds to a waveform in `test_noisy_speech` must be contained in the corresponding test noisy speech waveforn filename. E.g. if the filename of a test noisy speech waveform is `test_noisy_speech/61-70968-0000_SIGNAL021_-5dB.wav`, then the filename of the corresponding test clean speech waveform must be contained in the filename of the test noisy speech waveform: `test_clean_speech/61-70968-0000.wav`. This is because a test clean speech waveform may be used as a reference for multiple waveforms in `test_noisy_speech` (e.g. `test_noisy_speech/61-70968-0000_SIGNAL021_0dB.wav`, `test_noisy_speech/61-70968-0000_SIGNAL021_5dB.wav`, and `test_noisy_speech/61-70968-0000_SIGNAL021_10dB.wav` are additional test noisy speech waveforms that the test clean speech waveform from the previous example is a reference for).
 
 Current networks
 -----
