@@ -59,7 +59,7 @@ Naming convention in the `set/` directory
 
 **Training set**
 
-The filenames of the waveforms in the `train_clean_speech` and `train_noise` directories are not restricted. There can be a different number of waveforms in each. The Deep Xi framework utilises each of the waveforms in `train_clean_speech` once during an epoch. For each `train_clean_speech` waveform of a mini-batch, the Deep Xi framework selects a random section of a randomely selected waveform from `train_noise` (that is at a length greater than or equal to the train clean speech waveform) and adds it to the train clean speech waveform at a randomly selected SNR level (the SNR level range can be set in `run.sh`). 
+The filenames of the waveforms in the `train_clean_speech` and `train_noise` directories are not restricted. There can be a different number of waveforms in each. The Deep Xi framework utilises each of the waveforms in `train_clean_speech` once during an epoch. For each `train_clean_speech` waveform of a mini-batch, the Deep Xi framework selects a random section of a randomely selected waveform from `train_noise` (that is at a length greater than or equal to the `train_clean_speech` waveform) and adds it to the `train_clean_speech` waveform at a randomly selected SNR level (the SNR level range can be set in `run.sh`). 
 
 **Validation set**
 
