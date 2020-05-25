@@ -57,7 +57,7 @@ The MATLAB scripts used to generate these sets can be found in [`set`](https://g
 Naming convention in the `set/` directory
 -----
 
-The following is already setup in the [Deep Xi Training Set](http://dx.doi.org/10.21227/3adt-pb04).
+The following is already configured in the [Deep Xi Training Set](http://dx.doi.org/10.21227/3adt-pb04) and [Deep Xi Test Set](http://dx.doi.org/10.21227/h3xh-tm88).
 
 **Training set**
 
