@@ -2,7 +2,7 @@
 
 ### config ###
 dataset_name="dns_challenge"
-tag="conv_tasnet_snrloss"
+tag="conv_tasnet_snrloss" # "conv_tasnet_snrloss" or "stft_tcn_pcmseloss" 
 data_list='
 blind_test_set
 '
@@ -12,7 +12,7 @@ blind_test_set
 # real_recordings
 # '
 gpuid=0
-mode="online" # offline, online, or online_debug
+mode="online_debug" # offline, online, or online_debug
 
 
 ### main ###
