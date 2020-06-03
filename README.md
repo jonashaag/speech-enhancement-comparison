@@ -30,3 +30,12 @@ $ ./make_filelist_testset.sh
 ```bash
 $ ./separate.sh
 ```
+### Paper
+If you find this repository useful, please consider citing:
+
+      @article{koyama2020exploring,
+      title={Exploring the Best Loss Function for DNN-Based Low-latency Speech Enhancement with Temporal Convolutional Networks},
+      author={Koyama, Yuichiro and Vuong, Tyler and Uhlich, Stefan and Raj, Bhiksha},
+      journal={arXiv preprint arXiv:2005.11611},
+      year={2020}
+      }
