@@ -14,5 +14,5 @@
     "non_causal_layer": 3,
     "stft_encdec": true,
     "stft_encdec_trainable": false,
-    "delay_flame": 7
+    "delay_frame": 7
 }
