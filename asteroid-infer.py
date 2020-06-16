@@ -1,3 +1,4 @@
+import os
 import sys
 import librosa
 import torch
@@ -11,10 +12,12 @@ def normalize_tensor_wav(wav_tensor, eps=1e-8, std=None):
     return (wav_tensor - mean) / (std + eps)
 
 
-model = torch.hub.load(*sys.argv[1:4])
-sr = int(sys.argv[4])
+outdir = sys.argv[1]
+model = torch.hub.load(*sys.argv[2:5])
+sr = int(sys.argv[5])
 
-for f in sys.argv[5:]:
+for f in sys.argv[6:]:
     data = librosa.core.load(f, sr=sr)[0]
     out = model.forward(normalize_tensor_wav(torch.from_numpy(data))).detach().numpy()
-    librosa.output.write_wav(f.rsplit('.', 1)[0] + '_out.wav', out, sr=sr)
+    librosa.output.write_wav(
+        os.path.join(outdir, os.path.basename(f).rsplit('.', 1)[0] + '_out.wav'), out, sr=sr)

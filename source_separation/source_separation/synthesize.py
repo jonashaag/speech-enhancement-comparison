@@ -23,39 +23,41 @@ from pytorch_sound.utils.sound import preemphasis
 
 def __load_model(model_name: str, pretrained_path: str) -> torch.nn.Module:
     print('Load model ...')
-    model = build_model(model_name).cuda()
-    chk = torch.load(pretrained_path)['model']
+    model = build_model(model_name)
+    chk = torch.load(pretrained_path,map_location=torch.device('cpu'))['model']
     model.load_state_dict(get_loadable_checkpoint(chk))
     model.eval()
     return model
 
 
-def run(audio_file: str, out_path: str, model_name: str, pretrained_path: str, lowpass_freq: int = 0,
+def run(*audio_files: [str], out_path: str, model_name: str, pretrained_path: str, lowpass_freq: int = 0,
         sample_rate: int = 22050):
-    print('Loading audio file...')
-    wav, sr = librosa.load(audio_file, sr=sample_rate)
-    wav = preemphasis(wav)
+    for audio_file in audio_files:
+        print('Loading audio file...')
+        wav, sr = librosa.load(audio_file, sr=sample_rate)
+        wav = preemphasis(wav)
 
-    if wav.dtype != np.float32:
-        wav = wav.astype(np.float32)
+        if wav.dtype != np.float32:
+            wav = wav.astype(np.float32)
 
-    # load model
-    model = __load_model(model_name, pretrained_path)
+        # load model
+        model = __load_model(model_name, pretrained_path)
 
-    # make tensor wav
-    wav = torch.FloatTensor(wav).unsqueeze(0).cuda()
+        # make tensor wav
+        wav = torch.FloatTensor(wav).unsqueeze(0)
 
-    # inference
-    print('Inference ...')
-    with torch.no_grad():
-        out_wav = model(wav)
-        out_wav = out_wav[0].cpu().numpy()
+        # inference
+        print('Inference ...')
+        with torch.no_grad():
+            out_wav = model(wav)
+            out_wav = out_wav[0].cpu().numpy()
 
-    if lowpass_freq:
-        out_wav = lowpass(out_wav, frequency=lowpass_freq)
+        if lowpass_freq:
+            out_wav = lowpass(out_wav, frequency=lowpass_freq)
 
-    # save wav
-    librosa.output.write_wav(out_path, inv_preemphasis(out_wav).clip(-1., 1.), sample_rate)
+        # save wav
+        librosa.output.write_wav(os.path.join(out_path, os.path.basename(audio_file).rsplit(".", 1)[0] + "_out.wav"),
+                                 inv_preemphasis(out_wav).clip(-1., 1.), sample_rate)
 
     print('Finish !')
 
@@ -73,7 +75,7 @@ def validate(meta_dir: str, model_name: str, pretrained_path: str, out_dir: str 
     :param sr: training sample rate
     """
 
-    preemp = PreEmphasis().cuda()
+    preemp = PreEmphasis()
 
     # load model
     model = __load_model(model_name, pretrained_path)
@@ -94,7 +96,7 @@ def validate(meta_dir: str, model_name: str, pretrained_path: str, out_dir: str 
         results = []
 
     for noise, clean, *others in tqdm(valid_loader, desc='validate'):
-        noise = noise.cuda()
+        noise = noise
         noise = preemp(noise.unsqueeze(1)).squeeze(1)
         with torch.no_grad():
             clean_hat = model(noise)
@@ -195,7 +197,7 @@ def test_dir(in_dir: str, out_dir: str, model_name: str, pretrained_path: str, s
     with Parallel(n_jobs=num_workers) as parallel:
 
         for dp, batch_idx in tqdm(zip(data_loader, range(0, len(wav_list), batch_size))):
-            batch_wav = dp[0].cuda()
+            batch_wav = dp[0]
             lens = dp[1].numpy()
 
             with torch.no_grad():

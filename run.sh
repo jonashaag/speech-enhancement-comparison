@@ -10,11 +10,13 @@ trap "rm -rf $workdir" EXIT
 
 case "$model" in
   tcnse)
-    ../venv/bin/python tcnse/nnet/separate.py tcnse/exp/dns_challenge/conv_tasnet_snrloss --input "$@" --dump-dir "$outdir"
+    ../venv/bin/python tcnse/nnet/separate.py \
+      tcnse/exp/dns_challenge/conv_tasnet_snrloss --input "$@" --dump-dir "$outdir"
     ;;
 
   convtasnet)
-    ../venv/bin/python conv-tasnet/nnet/separate.py conv-tasnet/pretrain/bn --fs 16000 --input "$@" --dump-dir "$outdir"
+    ../venv/bin/python conv-tasnet/nnet/separate.py \
+      conv-tasnet/pretrain/gln --fs 16000 --input "$@" --dump-dir "$outdir"
     ;;
 
   deepxi)
@@ -22,7 +24,8 @@ case "$model" in
     cp "$@" $workdir/in
     . ../venv/bin/activate
     cd DeepXi
-    env TEST_X_PATH=$workdir/in OUT_PATH=$workdir/out ./run.sh GPU=-1 VER="resnet-1.0c" INFER=1 GAIN="mmse-lsa" 
+    env TEST_X_PATH=$workdir/in OUT_PATH=$workdir/out \
+      ./run.sh GPU=-1 VER="resnet-1.0c" INFER=1 GAIN="mmse-lsa" 
     find $workdir/out | xargs cp $outdir
     find $workdir/out -type f -exec cp {} \; $outdir
     ;;
@@ -46,13 +49,16 @@ case "$model" in
     ;;
 
   convtasnet-asteroid)
-    # todo output dir
-    ../venv/bin/python asteroid-infer.py mpariente/asteroid conv_tasnet 'mpariente/ConvTasNet_WHAM!_sepnoisy' 8000 "$@"
+    ../venv/bin/python asteroid-infer.py "$outdir" \
+      mpariente/asteroid conv_tasnet 'Cosentino/ConvTasNet_LibriMix_sep_noisy' 8000 "$@"
     ;;
 
   source_separation)
-    # todo
-    env PYTHONPATH=source_separation ../venv/bin/python source_separation/source_separation/synthesize.py separate \
-      AUDIO_FILE OUT_PATH MODEL_NAME PRETRAINED_PATH --sample_rate=16000
+    # todo understand multiple chkpt files and multiple models inside each file
+    env PYTHONPATH=source_separation ../venv/bin/python \
+      source_separation/source_separation/synthesize.py separate \
+        --out_path "$outdir" --sample_rate=16000 \
+        --model_name refine_unet_larger --pretrained_path ~/Downloads/RefineSpectrogramUnet.best.chkpt \
+        "$@"
     ;;
 esac
