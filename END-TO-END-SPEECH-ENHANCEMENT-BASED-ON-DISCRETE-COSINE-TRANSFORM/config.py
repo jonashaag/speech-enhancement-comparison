@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+import os
 
-workdir = '..'
+workdir = os.environ["DCT_WORKDIR"]
 
 #
 # Network Optimization

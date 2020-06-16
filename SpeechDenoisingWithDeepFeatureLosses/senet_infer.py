@@ -3,30 +3,9 @@ from data_import import *
 
 import sys, getopt
 
-valfolder = "dataset/valset_noisy"
 modfolder = "models"
 
-try:
-    opts, args = getopt.getopt(sys.argv[1:],"hd:m:",["ifolder=,modelfolder="])
-except getopt.GetoptError:
-    print 'Usage: python senet_infer.py -d <inputfolder> -m <modelfolder>'
-    sys.exit(2)
-for opt, arg in opts:
-    if opt == '-h':
-        print 'Usage: pythonsenet_infer.py -d <inputfolder> -m <modelfolder>'
-        sys.exit()
-    elif opt in ("-d", "--inputfolder"):
-        valfolder = arg
-    elif opt in ("-m", "--modelfolder"):
-        modfolder = arg
-print 'Input folder is "' + valfolder + '/"'
-print 'Model folder is "' + modfolder + '/"'
-
-if valfolder[-1] == '/':
-    valfolder = valfolder[:-1]
-
-if not os.path.exists(valfolder+'_denoised'):
-    os.makedirs(valfolder+'_denoised')
+outfolder = sys.argv[1]
 
 # SPEECH ENHANCEMENT NETWORK
 SE_LAYERS = 13 # NUMBER OF INTERNAL LAYERS
@@ -44,7 +23,8 @@ with tf.variable_scope(tf.get_variable_scope()):
     enhanced=senet(input, n_layers=SE_LAYERS, norm_type=SE_NORM, n_channels=SE_CHANNELS)
 
 # LOAD DATA
-valset = load_noisy_data_list(valfolder = valfolder)
+valset = {'innames': sys.argv[2:],
+          'shortnames': [os.path.basename(f) for f in sys.argv[2:]]}
 valset = load_noisy_data(valset)
 
 # BEGIN SCRIPT #########################################################################################################
@@ -74,5 +54,5 @@ for id in tqdm(range(0, len(valset["innames"]))):
     output = sess.run([enhanced],
                         feed_dict={input: inputData})
     output = np.reshape(output, -1)
-    wavfile.write("%s_denoised/%s" % (valfolder,valset["shortnames"][i]), fs, output)
+    wavfile.write(os.path.join(outfolder,valset["shortnames"][i].rsplit(".", 1)[0] + "_enhanced.wav"), fs, output)
 

@@ -2,33 +2,6 @@
 
 PROJ_DIR='deepxi'
 
-case `hostname` in
-"fist")  echo "Running on fist."
-    SET_PATH='/mnt/ssd/deep_xi_training_set'
-    DATA_PATH='/home/aaron/data/'$PROJ_DIR
-    TEST_X_PATH='/home/aaron/mnt/aaron/set/deep_xi_test_set/test_noisy_speech'
-    TEST_S_PATH='/home/aaron/mnt/aaron/set/deep_xi_test_set/test_clean_speech'
-    OUT_PATH='/home/aaron/out/'$PROJ_DIR
-    MODEL_PATH='/home/aaron/model/'$PROJ_DIR
-    ;;
-"pinky-jnr")  echo "Running on pinky-jnr."
-    SET_PATH='/home/aaron/set/deep_xi_training_set'
-    DATA_PATH='/home/aaron/mnt/fist/data/'$PROJ_DIR
-    TEST_X_PATH='/home/aaron/mnt/aaron/set/deep_xi_test_set/test_noisy_speech'
-    TEST_S_PATH='/home/aaron/mnt/aaron/set/deep_xi_test_set/test_clean_speech'
-    OUT_PATH='/home/aaron/out/'$PROJ_DIR
-    MODEL_PATH='/home/aaron/mnt/fist/model/'$PROJ_DIR
-    ;;
-*) echo "This workstation is not known. Using default paths."
-    SET_PATH='set'
-    DATA_PATH='data'
-    TEST_X_PATH='set/test_noisy_speech'
-    TEST_S_PATH='set/test_clean_speech'
-    OUT_PATH='out'
-    MODEL_PATH='model'
-   ;;
-esac
-
 get_free_gpu () {
     NUM_GPU=$( nvidia-smi --query-gpu=pci.bus_id --format=csv,noheader | wc -l )
     echo "$NUM_GPU total GPU/s."
@@ -111,12 +84,12 @@ then
                     --infer             $INFER          \
                     --test              $TEST           \
                     --gpu               $GPU            \
-                    --set_path          $SET_PATH       \
-                    --data_path         $DATA_PATH      \
                     --test_x_path       $TEST_X_PATH    \
-                    --test_s_path       $TEST_S_PATH    \
                     --out_path          $OUT_PATH       \
-                    --model_path        $MODEL_PATH
+                    --model_path        model
+                    #--data_path         $DATA_PATH      \
+                    #--set_path          $SET_PATH       \
+                    #--test_s_path       $TEST_S_PATH    \
 fi
 
 if [ "$VER" == 'resnet-1.0n' ]

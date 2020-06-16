@@ -11,7 +11,7 @@ import numpy as np
 from conv_tas_net import ConvTasNet
 
 from libs.utils import load_json, get_logger
-from libs.audio import WaveReader, write_wav
+from libs.audio import WaveReader, write_wav, read_wav
 
 logger = get_logger(__name__)
 
@@ -44,8 +44,8 @@ class NnetComputer(object):
 
 
 def run(args):
-    mix_input = WaveReader(args.input, sample_rate=args.fs)
     computer = NnetComputer(args.checkpoint, args.gpu)
+    mix_input = [(os.path.basename(f), read_wav(f)) for f in args.input]
     for key, mix_samps in mix_input:
         logger.info("Compute on utterance {}...".format(key))
         spks = computer.compute(mix_samps)
@@ -69,7 +69,7 @@ if __name__ == "__main__":
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("checkpoint", type=str, help="Directory of checkpoint")
     parser.add_argument(
-        "--input", type=str, required=True, help="Script for input waveform")
+        "--input", type=str, required=True, help="Script for input waveform", nargs="+")
     parser.add_argument(
         "--gpu",
         type=int,

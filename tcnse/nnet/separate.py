@@ -34,7 +34,7 @@ import numpy as np
 from network import TCNSENet
 
 from libs.utils import load_json, get_logger
-from libs.audio import WaveReader, write_wav
+from libs.audio import WaveReader, write_wav, read_wav
 
 logger = get_logger(__name__)
 
@@ -115,7 +115,6 @@ class NnetComputer(object):
 
 
 def run(args):
-    mix_input = WaveReader(args.input, sample_rate=args.fs, get_filepath=True)
     cpt_tag=os.path.basename(args.checkpoint)
 
     if args.online==1:
@@ -123,6 +122,7 @@ def run(args):
     else:
         computer = NnetComputer(args.checkpoint, args.gpu)
 
+    mix_input = [(os.path.basename(f), (read_wav(f), 'foo')) for f in args.input]
     for key, mix_samps in mix_input:
         filepath_org = mix_samps[1]
         mix_samps = mix_samps[0]
@@ -182,7 +182,7 @@ if __name__ == "__main__":
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("checkpoint", type=str, help="Directory of checkpoint")
     parser.add_argument(
-        "--input", type=str, required=True, help="Script for input waveform")
+        "--input", type=str, required=True, help="Script for input waveform", nargs="+")
     parser.add_argument(
         "--gpu",
         type=int,
