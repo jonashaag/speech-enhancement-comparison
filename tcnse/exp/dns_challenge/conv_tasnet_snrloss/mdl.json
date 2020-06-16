@@ -1,0 +1,18 @@
+{
+    "enc_dim": 512,
+    "feature_dim": 128,
+    "sr": 16000,
+    "window_size": 32,
+    "shift_size": 16,
+    "layer": 8,
+    "stack": 3,
+    "kernel": 3,
+    "noise_aware": true,
+    "nl_for_mask": "sigmoid",
+    "absangle_input": false,
+    "causal": true,
+    "non_causal_layer": 5,
+    "stft_encdec": false,
+    "stft_encdec_trainable": false,
+    "delay_frame": 31
+}

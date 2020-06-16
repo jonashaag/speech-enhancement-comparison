@@ -1,0 +1,8 @@
+.vscode/
+__pycache__/
+*.log
+*.npy
+data/DNS-Challenge
+data/VoiceBankDEMAND
+eval
+init_dump
