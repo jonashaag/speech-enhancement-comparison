@@ -1,0 +1,8 @@
+scipy
+tqdm
+pysoundfile
+Cython
+pesq
+pystoi
+tensorflow
+numpy==1.18.3
