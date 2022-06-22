@@ -5,4 +5,4 @@ Cython
 pesq
 pystoi
 tensorflow
-numpy==1.18.3
+numpy==1.22.0
